@@ -8,6 +8,5 @@ El código original se basa en el tutorial proporcionado por [Dr. Sergio Ivvan V
 
 El código ha sido adaptado para el propósito del taller con la colaboración de mi compañero de maestría, [Uriel Mendoza](https://mx.linkedin.com/in/uriel-mendoza-46146b1b9).
 
-En el archivo README, puedes insertar el enlace utilizando la sintaxis de Markdown para links. Aquí tienes el fragmento actualizado con el enlace correctamente formateado:
 
 ---
