@@ -1,4 +1,4 @@
-# Descarga y gestión de datis del Sistema Metereologico Nacional
+# Descarga y gestión de datos del Sistema Metereologico Nacional
 
 ## Descripción del taller
 
