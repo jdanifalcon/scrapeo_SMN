@@ -9,6 +9,7 @@ Este taller abordará el uso de rvest y stringr en R, centrado en la extracción
 El código se basa en el tutorial proporcionado por [Dr. Sergio Ivvan Valdez Peña y Dr. Jorge Paredes Tavares](https://sites.google.com/centrogeo.edu.mx/tutoriales-geocomputacion/series_de_tiempo/descarga-de-datos-del-smn), quienes imparten la materia de Hidrogeomática. Agradecemos su trabajo y enseñanza, que han sido la base para el desarrollo de este taller.
 
 El código ha sido adaptado para el propósito del taller con la colaboración de mi compañero de maestría, [Uriel Mendoza](https://mx.linkedin.com/in/uriel-mendoza-46146b1b9).
+https://github.com/UrielMendoza
 
 
 ---
