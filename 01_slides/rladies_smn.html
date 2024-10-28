@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Descarga y gestión de datos del Sistema Metereologico Nacional</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jessica Daniela Ocaña Falcón" />
+    <script src="rladies_r_python_files/header-attrs-2.11/header-attrs.js"></script>
+    <link href="rladies_r_python_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="rladies_r_python_files/remark-css-0.0.1/rladies.css" rel="stylesheet" />
+    <link href="rladies_r_python_files/remark-css-0.0.1/rladies-fonts.css" rel="stylesheet" />
+    <link href="rladies_r_python_files/panelset-0.2.6/panelset.css" rel="stylesheet" />
+    <script src="rladies_r_python_files/panelset-0.2.6/panelset.js"></script>
+    <script src="https://use.fontawesome.com/5235085b15.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Descarga y gestión de datos del Sistema Metereologico Nacional
+## ︿<br/>R-Ladies Villahermosa
+### Jessica Daniela Ocaña Falcón
+
+---
+
+
+# ¿Quién soy?
+
+.pull-left[
+
+&lt;br&gt;
+
+&lt;img src="images/imagen.JPEG" width="50%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+### Jessica Daniela O. Falcón
+- Gestor Ambiental
+- Especialista en análisis de datos geoespaciales
+- Estudiante de la Maestria en Ciencias de la Información Geoespacial (CENTROGEO)
+]
+
+---
+
+background-position: 50% 50%
+class: center, inverse
+
+&lt;img src="images/democratizacion.JPEG" width="500px" height="500px" style="position:center;"&gt;
+ 
+# Democratización de los datos
+
+---
+
+background-position: 50% 50%
+class: center, inverse
+
+&lt;img src="memes/gatitorojo.jpeg" width="500px" height="500px" style="position:center;"&gt;
+ 
+#  Nuestros datos
+
+
+
+
+
+
+<div>
+<style type="text/css">.xaringan-extra-logo {
+width: 30px;
+height: 30px;
+z-index: 0;
+background-image: url(images/github.png);
+background-size: contain;
+background-repeat: no-repeat;
+position: absolute;
+top:1em;right:1em;
+}
+</style>
+<script>(function () {
+  let tries = 0
+  function addLogo () {
+    if (typeof slideshow === 'undefined') {
+      tries += 1
+      if (tries < 10) {
+        setTimeout(addLogo, 100)
+      }
+    } else {
+      document.querySelectorAll('.remark-slide-content:not(.title-slide):not(.inverse):not(.hide_logo)')
+        .forEach(function (slide) {
+          const logo = document.createElement('a')
+          logo.classList = 'xaringan-extra-logo'
+          logo.href = 'https://github.com/jdanifalcon/scrapeo_SMN'
+          slide.appendChild(logo)
+        })
+    }
+  }
+  document.addEventListener('DOMContentLoaded', addLogo)
+})()</script>
+</div>
+
+&lt;style type="text/css"&gt;
+/* Table width = 100% max-width */
+.remark-slide table{
+    width: 100%;
+}
+
+/* background-color blanco siempre */
+.remark-slide thead, .remark-slide tr:nth-child(2n) {
+    background-color: white;
+}
+
+/* Incremento en transparencia del color de highlight del código ya que lo uso mucho y así se lee mejor */
+.remark-code-line-highlighted { 
+    background-color: rgba(136, 57, 138, 0.1);
+}
+&lt;/style&gt;
+
+
+
+
+---
+
+# ¿Qué vamos a ver hoy?
+
+--
+
+- Cómo usar **`R en Google Colab`**
+
+--
+
+- El uso de `{rvest}`📦 y `{stringr}`📦
+
+--
+
+<a href="https://smn.conagua.gob.mx/es/">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Smn_logo.jpg/640px-Smn_logo.jpg" width="50%" style="display: block; margin-left: auto; margin-right: auto;"/>
+</a>
+
+---
+background-position: 50% 50%
+class: inverse, center, middle
+
+# { espacio de memes }
+
+.pull-center[
+&lt;img src="memes/web-scraping-memes.jpg" width="100%" height="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+# { library(c(rvest, stringr)) }
+
+.pull-left[
+&lt;img src="images/rvest.png" width="100%" height="100%" style="display: block; margin: auto;" /&gt;
+]
+
+.pull-right[
+&lt;img src="images/stringr.png" width="100%" height="100%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+class: inverse, center, middle
+
+# Antes de empezar
+
+--
+
+¿Es posible ejecutar código en R o Python sin necesidad de instalar nada en nuestras computadoras?
+
+
+---
+
+# ☁️ Trabajar en la nube ☁️
+
+Existen **recursos gratuitos**: 
+
+🔹 `RStudio Cloud`: https://rstudio.cloud/
+
+🔹 `Google Colab`: https://colab.research.google.com/
+
+🔹 `AWS Sagemaker Studio Lab`: https://studiolab.sagemaker.aws/
+
+&lt;br&gt;
+&lt;br&gt;
+
+También existen **recursos pagos** si se busca una mayor capacidad de cómputo o almacenamiento. 
+
+👉 [🔗 Si quieren saber más, vayan a revisar el repositorio de Karina Bartolomé](https://github.com/karbartolome/rladies_charlas)
+---
+
+# R en Google Colab
+
+🔹 Para cambiar de entorno en Google Colab:
+
+1. **Método 1: Cambiar tipo de entorno**
+   - Menú: `Conectar` > `Cambiar tipo de entorno de ejecución` > Selecciona **R** > `Guardar`.
+
+2. **Método 2: Celdas mágicas en Python**
+   - Usar `%%R` al inicio de una celda para ejecutar código R dentro de un notebook Python.
+
+```r
+%%R
+library(rvest)    # Para realizar scraping web
+library(stringr)  # Para manipulación y manejo de cadenas de texto
+library(ggplot2)  # Para crear gráficos
+```
+
+---
+
+class: inverse, center, middle
+
+# ¡A trabajar!
+
+
+&lt;img src="images/work.gif" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, center, middle
+
+# Ustedes viendo como se hacia una descarga masiva de datos
+
+&lt;img src="images/elliot.gif" width="45%" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: center, middle
+
+# Comentarios finales
+
+---
+
+# Cosas que quiero que se lleven de este taller
+
+--
+
+- Capacidad para extraer datos web con rvest: Aprenderás a realizar scraping de páginas web de manera eficiente 💜 
+
+&lt;img src="images/robot.gif" width="30%" style="display: block; margin: auto;" /&gt;
+
+--
+
+- Automatización de tareas repetitivas: Entenderás cómo automatizar el proceso de extracción y manipulación de datos para ahorrar tiempo 💜 
+
+--
+
+- Dominio en la manipulación de texto con stringr: Sabrás cómo limpiar, modificar y estructurar cadenas de texto para análisis 💜 
+
+---
+
+
+class: inverse, center, middle
+
+# Contacto
+
+&lt;a href="https://www.linkedin.com/in/jdofalcon/"&gt;&lt;i class="fa fa-link fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @jdofalcon&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://twitter.com/jdofalcon"&gt;&lt;i class="fa fa-twitter fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @jdofalcon&lt;/a&gt;&lt;br&gt;
+&lt;a href="http://github.com/jdanifalcon"&gt;&lt;i class="fa fa-github fa-fw"&gt;&lt;/i&gt;&amp;nbsp; @jdanifalcon&lt;/a&gt;&lt;br&gt;
+
+---
+
+
+class: center, middle
+
+# ¡Muchas gracias!
+
+Las slides fueron creadas con el paquete [**xaringan**](https://github.com/yihui/xaringan), utilizando el template de Rladies
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"navigation": {
+"scroll": false
+}
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<script>
+(function() {
+  var divHTML = document.querySelectorAll(".details-open");
+  divHTML.forEach(function (el) {
+    var preNodes = el.getElementsByTagName("pre");
+    var outputNode = preNodes[1];
+    outputNode.outerHTML = "<details open class='output'><summary>Output</summary>" + outputNode.outerHTML + "</details>";
+  })
+})();
+(function() {
+  var divHTML = document.querySelectorAll(".details");
+  divHTML.forEach(function (el) {
+    var preNodes = el.getElementsByTagName("pre");
+    var outputNode = preNodes[1];
+    outputNode.outerHTML = "<details class='output'><summary>Output</summary>" + outputNode.outerHTML + "</details>";
+  })
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
